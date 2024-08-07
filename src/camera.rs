@@ -1,10 +1,7 @@
 use avian3d::prelude::*;
 use bevy::prelude::*;
 
-use super::cursor::CursorPosition;
 use super::player::PlayerMarker;
-
-const CURSOR_TRACK_FACTOR: f32 = 0.15;
 
 pub struct CameraPlugin;
 
@@ -26,7 +23,7 @@ pub struct CameraMarker;
 fn setup(mut commands: Commands) {
     commands.spawn((
         Camera3dBundle {
-            transform: Transform::from_xyz(0., 16., 0.).looking_at(Vec3::new(0., 0., 0.), Vec3::Y),
+            transform: Transform::from_xyz(0., 16., 0.).looking_at(Vec3::new(0., 0., 0.), -Vec3::X),
             ..default()
         },
         CameraMarker,
@@ -40,7 +37,6 @@ fn setup(mut commands: Commands) {
 }
 
 fn update(
-    cursor_position: ResMut<CursorPosition>,
     query_player_transform: Query<&Transform, (With<PlayerMarker>, Without<CameraMarker>)>,
     mut query_camera_transform: Query<&mut Transform, With<CameraMarker>>,
 ) {
@@ -48,8 +44,7 @@ fn update(
     let mut camera_transform = query_camera_transform.single_mut();
     let target = player_transform
         .translation
-        .xz()
-        .lerp(cursor_position.global.xz(), CURSOR_TRACK_FACTOR);
+        .xz();
     camera_transform.translation.x = target.x;
     camera_transform.translation.z = target.y;
 }

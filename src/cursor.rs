@@ -10,7 +10,10 @@ impl Plugin for CursorPlugin {
         app.init_resource::<CursorPosition>();
         app.add_plugins(InfiniteGridPlugin);
         app.add_systems(Startup, setup);
-        app.add_systems(Update, update);
+        app.add_systems(
+            PostUpdate,
+            update_cursor.after(TransformSystem::TransformPropagate),
+        );
     }
 }
 
@@ -24,7 +27,7 @@ fn setup(mut commands: Commands) {
     commands.spawn(InfiniteGridBundle::default());
 }
 
-fn update(
+pub fn update_cursor(
     mut cursor_position_res: ResMut<CursorPosition>,
     query_window: Query<&Window, With<PrimaryWindow>>,
     query_camera: Query<(&Camera, &GlobalTransform), With<CameraMarker>>,

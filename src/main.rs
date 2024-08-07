@@ -1,13 +1,14 @@
 use avian3d::prelude::*;
+use bevy::diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin};
 use bevy::{prelude::*, window::PresentMode};
-
-mod camera;
-mod cursor;
-mod player;
 
 use camera::CameraPlugin;
 use cursor::CursorPlugin;
 use player::PlayerPlugin;
+
+mod camera;
+mod cursor;
+mod player;
 
 fn main() {
     let mut app = App::new();
@@ -21,11 +22,14 @@ fn main() {
                 }),
                 ..default()
             }),
+        LogDiagnosticsPlugin::default(),
+        FrameTimeDiagnosticsPlugin,
         PhysicsPlugins::default(),
         PhysicsDebugPlugin::default(),
         CameraPlugin,
         CursorPlugin,
         PlayerPlugin,
     ));
+
     app.run();
 }
